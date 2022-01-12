@@ -28,8 +28,8 @@ class _CreateProfileWidgetState extends State<CreateProfileWidget> {
   @override
   void initState() {
     super.initState();
-    textController1 = TextEditingController();
-    textController2 = TextEditingController();
+    textController1 = TextEditingController(text: currentUserDisplayName);
+    textController2 = TextEditingController(text: currentUserDocument?.bio);
   }
 
   @override
@@ -67,99 +67,108 @@ class _CreateProfileWidgetState extends State<CreateProfileWidget> {
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
-                      width: 75,
-                      height: 75,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.background,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: FlutterFlowIconButton(
-                        borderColor: Colors.transparent,
-                        borderRadius: 30,
-                        buttonSize: 48,
-                        icon: Icon(
-                          Icons.photo_camera_outlined,
-                          color: FlutterFlowTheme.grayIcon400,
-                          size: 30,
+                    AuthUserStreamWidget(
+                      child: Container(
+                        width: 75,
+                        height: 75,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.background,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        onPressed: () async {
-                          final selectedMedia =
-                              await selectMediaWithSourceBottomSheet(
-                            context: context,
-                            allowPhoto: true,
-                          );
-                          if (selectedMedia != null &&
-                              validateFileFormat(
-                                  selectedMedia.storagePath, context)) {
-                            showUploadMessage(context, 'Uploading file...',
-                                showLoading: true);
-                            final downloadUrl = await uploadData(
-                                selectedMedia.storagePath, selectedMedia.bytes);
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            if (downloadUrl != null) {
-                              setState(() => uploadedFileUrl = downloadUrl);
-                              showUploadMessage(context, 'Success!');
-                            } else {
-                              showUploadMessage(
-                                  context, 'Failed to upload media');
-                              return;
+                        child: FlutterFlowIconButton(
+                          borderColor: Colors.transparent,
+                          borderRadius: 90,
+                          buttonSize: 28,
+                          fillColor: Color(0xFFAF3737),
+                          icon: Icon(
+                            Icons.photo_camera_outlined,
+                            color: FlutterFlowTheme.grayIcon400,
+                            size: 30,
+                          ),
+                          onPressed: () async {
+                            final selectedMedia =
+                                await selectMediaWithSourceBottomSheet(
+                              context: context,
+                              allowPhoto: true,
+                            );
+                            if (selectedMedia != null &&
+                                validateFileFormat(
+                                    selectedMedia.storagePath, context)) {
+                              showUploadMessage(context, 'Uploading file...',
+                                  showLoading: true);
+                              final downloadUrl = await uploadData(
+                                  selectedMedia.storagePath,
+                                  selectedMedia.bytes);
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                              if (downloadUrl != null) {
+                                setState(() => uploadedFileUrl = downloadUrl);
+                                showUploadMessage(context, 'Success!');
+                              } else {
+                                showUploadMessage(
+                                    context, 'Failed to upload media');
+                                return;
+                              }
                             }
-                          }
 
-                          final usersUpdateData = createUsersRecordData(
-                            photoUrl: uploadedFileUrl,
-                          );
-                          await currentUserReference.update(usersUpdateData);
-                          await Navigator.pushAndRemoveUntil(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.fade,
-                              duration: Duration(milliseconds: 0),
-                              reverseDuration: Duration(milliseconds: 0),
-                              child: CreateProfileWidget(),
-                            ),
-                            (r) => false,
-                          );
-                        },
+                            final usersUpdateData = createUsersRecordData(
+                              photoUrl: uploadedFileUrl,
+                              displayName: textController1.text,
+                              bio: textController2.text,
+                            );
+                            await currentUserReference.update(usersUpdateData);
+                            await Navigator.pushAndRemoveUntil(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                duration: Duration(milliseconds: 0),
+                                reverseDuration: Duration(milliseconds: 0),
+                                child: CreateProfileWidget(),
+                              ),
+                              (r) => false,
+                            );
+                          },
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                        child: TextFormField(
-                          controller: textController1,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            labelText: 'Full Name',
-                            labelStyle: FlutterFlowTheme.title3.override(
+                        child: AuthUserStreamWidget(
+                          child: TextFormField(
+                            controller: textController1,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelText: 'Full Name',
+                              labelStyle: FlutterFlowTheme.title3.override(
+                                fontFamily: 'Lexend Deca',
+                                color: FlutterFlowTheme.grayIcon400,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 1,
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4.0),
+                                  topRight: Radius.circular(4.0),
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 1,
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4.0),
+                                  topRight: Radius.circular(4.0),
+                                ),
+                              ),
+                            ),
+                            style: FlutterFlowTheme.title3.override(
                               fontFamily: 'Lexend Deca',
-                              color: FlutterFlowTheme.grayIcon400,
+                              color: FlutterFlowTheme.darkText,
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x00000000),
-                                width: 1,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4.0),
-                                topRight: Radius.circular(4.0),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x00000000),
-                                width: 1,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4.0),
-                                topRight: Radius.circular(4.0),
-                              ),
-                            ),
-                          ),
-                          style: FlutterFlowTheme.title3.override(
-                            fontFamily: 'Lexend Deca',
-                            color: FlutterFlowTheme.darkText,
                           ),
                         ),
                       ),
@@ -180,42 +189,44 @@ class _CreateProfileWidgetState extends State<CreateProfileWidget> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                        child: TextFormField(
-                          controller: textController2,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            labelText: 'Short Description & Bio',
-                            labelStyle: FlutterFlowTheme.subtitle2.override(
+                        child: AuthUserStreamWidget(
+                          child: TextFormField(
+                            controller: textController2,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelText: 'Short Description & Bio',
+                              labelStyle: FlutterFlowTheme.subtitle2.override(
+                                fontFamily: 'Lexend Deca',
+                                color: FlutterFlowTheme.grayIcon400,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 1,
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4.0),
+                                  topRight: Radius.circular(4.0),
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 1,
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4.0),
+                                  topRight: Radius.circular(4.0),
+                                ),
+                              ),
+                            ),
+                            style: FlutterFlowTheme.subtitle2.override(
                               fontFamily: 'Lexend Deca',
-                              color: FlutterFlowTheme.grayIcon400,
+                              color: FlutterFlowTheme.darkText,
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x00000000),
-                                width: 1,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4.0),
-                                topRight: Radius.circular(4.0),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x00000000),
-                                width: 1,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4.0),
-                                topRight: Radius.circular(4.0),
-                              ),
-                            ),
+                            maxLines: 4,
+                            keyboardType: TextInputType.multiline,
                           ),
-                          style: FlutterFlowTheme.subtitle2.override(
-                            fontFamily: 'Lexend Deca',
-                            color: FlutterFlowTheme.darkText,
-                          ),
-                          maxLines: 4,
-                          keyboardType: TextInputType.multiline,
                         ),
                       ),
                     ),
@@ -272,13 +283,15 @@ class _CreateProfileWidgetState extends State<CreateProfileWidget> {
                       final usersUpdateData = createUsersRecordData(
                         displayName: textController1.text,
                         bio: textController2.text,
+                        profileType: 'Model',
                       );
                       await currentUserReference.update(usersUpdateData);
-                      await Navigator.push(
+                      await Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (context) => EditModelProfileWidget(),
                         ),
+                        (r) => false,
                       );
                     },
                     child: Container(
@@ -339,13 +352,15 @@ class _CreateProfileWidgetState extends State<CreateProfileWidget> {
                         final usersUpdateData = createUsersRecordData(
                           displayName: textController1.text,
                           bio: textController2.text,
+                          profileType: 'Producer',
                         );
                         await currentUserReference.update(usersUpdateData);
-                        await Navigator.push(
+                        await Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                             builder: (context) => EditProducerlProfileWidget(),
                           ),
+                          (r) => false,
                         );
                       },
                       child: Container(

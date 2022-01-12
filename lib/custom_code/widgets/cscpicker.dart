@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // Begin custom widget code
 import 'package:csc_picker/csc_picker.dart';
 
+//import 'package:../app_state.dart';
 class Cscpicker extends StatefulWidget {
   const Cscpicker({
     Key key,
@@ -116,6 +117,7 @@ class _CscpickerState extends State<Cscpicker> {
               setState(() {
                 ///store value in city variable
                 cityValue = value;
+                //                    FFAppState().City = value;
               });
             },
           ),

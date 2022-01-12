@@ -2,13 +2,12 @@ import '../auth/auth_util.dart';
 import '../backend/backend.dart';
 import '../backend/firebase_storage/storage.dart';
 import '../flutter_flow/flutter_flow_drop_down.dart';
-import '../flutter_flow/flutter_flow_place_picker.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
-import '../flutter_flow/place.dart';
 import '../flutter_flow/upload_media.dart';
-import 'dart:io';
+import '../main.dart';
+import '../custom_code/widgets/index.dart' as custom_widgets;
 import '../flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +28,6 @@ class EditModelProfileWidget extends StatefulWidget {
 }
 
 class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
-  String ddCountryValue;
-  String ddStateValue;
-  var placePickerValue = FFPlace();
   String eyeColorDropDownValue;
   String hairColorDropDownValue;
   String uploadedFileUrl = '';
@@ -107,7 +103,7 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                 width: 75,
                                 height: 75,
                                 decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.background,
+                                  color: Color(0xFF1D68CC),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: InkWell(
@@ -294,40 +290,58 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                     style: FlutterFlowTheme.bodyText2,
                                   ),
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  child: Slider(
-                                    activeColor:
-                                        FlutterFlowTheme.secondaryColor,
-                                    inactiveColor: Color(0xFF9E9E9E),
-                                    min: 30,
-                                    max: 220,
-                                    value: heightCmValue ??=
-                                        functions.validateRangeDbl(
-                                            30.0,
-                                            220.0,
-                                            170.0,
-                                            editModelProfileUsersRecord
-                                                .modelHeightCm),
-                                    divisions: 190,
-                                    onChanged: (newValue) {
-                                      setState(() => heightCmValue = newValue);
-                                    },
-                                  ),
-                                ),
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text(
-                                      heightCmValue.toString(),
-                                      style: FlutterFlowTheme.bodyText2,
+                                    Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: Slider(
+                                          activeColor:
+                                              FlutterFlowTheme.secondaryColor,
+                                          inactiveColor: Color(0xFF9E9E9E),
+                                          min: 30,
+                                          max: 220,
+                                          value: heightCmValue ??=
+                                              functions.validateRangeDbl(
+                                                  30.0,
+                                                  220.0,
+                                                  170.0,
+                                                  editModelProfileUsersRecord
+                                                      .modelHeightCm),
+                                          divisions: 190,
+                                          onChanged: (newValue) {
+                                            setState(
+                                                () => heightCmValue = newValue);
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                    Text(
-                                      functions.cm2ftStr(heightCmValue),
-                                      textAlign: TextAlign.end,
-                                      style: FlutterFlowTheme.bodyText2,
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 0, 15, 0),
+                                          child: Text(
+                                            heightCmValue.toString(),
+                                            style: FlutterFlowTheme.bodyText2,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 0, 15, 0),
+                                          child: Text(
+                                            functions.cm2ftStr(heightCmValue),
+                                            textAlign: TextAlign.end,
+                                            style: FlutterFlowTheme.bodyText2,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -378,13 +392,17 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                           ),
                                         ),
                                       ),
-                                      Text(
-                                        valueOrDefault<String>(
-                                          measureBustValue.toString(),
-                                          '32',
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 15, 0),
+                                        child: Text(
+                                          valueOrDefault<String>(
+                                            measureBustValue.toString(),
+                                            '32',
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          style: FlutterFlowTheme.bodyText2,
                                         ),
-                                        textAlign: TextAlign.center,
-                                        style: FlutterFlowTheme.bodyText2,
                                       ),
                                     ],
                                   ),
@@ -408,10 +426,43 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                           style: FlutterFlowTheme.bodyText2,
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
                                       Expanded(
-                                        child: Align(
-                                          alignment:
-                                              AlignmentDirectional(-0.3, 0),
+                                        child: AuthUserStreamWidget(
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: Slider(
+                                              activeColor: FlutterFlowTheme
+                                                  .secondaryColor,
+                                              inactiveColor: Color(0xFF9E9E9E),
+                                              min: 15,
+                                              max: 60,
+                                              value: measureWaistValue ??=
+                                                  currentUserDocument
+                                                      ?.modelMeasureWaist,
+                                              label:
+                                                  measureWaistValue.toString(),
+                                              divisions: 45,
+                                              onChanged: (newValue) {
+                                                setState(() =>
+                                                    measureWaistValue =
+                                                        newValue);
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment:
+                                            AlignmentDirectional(-0.3, 0),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 0, 15, 0),
                                           child: Text(
                                             valueOrDefault<String>(
                                               measureWaistValue.toString(),
@@ -422,27 +473,6 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                         ),
                                       ),
                                     ],
-                                  ),
-                                  AuthUserStreamWidget(
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: Slider(
-                                        activeColor:
-                                            FlutterFlowTheme.secondaryColor,
-                                        inactiveColor: Color(0xFF9E9E9E),
-                                        min: 15,
-                                        max: 60,
-                                        value: measureWaistValue ??=
-                                            currentUserDocument
-                                                ?.modelMeasureWaist,
-                                        label: measureWaistValue.toString(),
-                                        divisions: 45,
-                                        onChanged: (newValue) {
-                                          setState(() =>
-                                              measureWaistValue = newValue);
-                                        },
-                                      ),
-                                    ),
                                   ),
                                 ],
                               ),
@@ -475,10 +505,38 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                           ),
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
                                       Expanded(
-                                        child: Align(
-                                          alignment:
-                                              AlignmentDirectional(-0.3, 0),
+                                        child: AuthUserStreamWidget(
+                                          child: Slider(
+                                            activeColor:
+                                                FlutterFlowTheme.secondaryColor,
+                                            inactiveColor: Color(0xFF9E9E9E),
+                                            min: 15,
+                                            max: 60,
+                                            value: measureHipsValue ??=
+                                                currentUserDocument
+                                                    ?.modelMeasureHips,
+                                            label: measureHipsValue.toString(),
+                                            divisions: 45,
+                                            onChanged: (newValue) {
+                                              setState(() =>
+                                                  measureHipsValue = newValue);
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment:
+                                            AlignmentDirectional(-0.3, 0),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 0, 15, 0),
                                           child: Text(
                                             measureHipsValue.toString(),
                                             textAlign: TextAlign.center,
@@ -487,23 +545,6 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                         ),
                                       ),
                                     ],
-                                  ),
-                                  AuthUserStreamWidget(
-                                    child: Slider(
-                                      activeColor:
-                                          FlutterFlowTheme.secondaryColor,
-                                      inactiveColor: Color(0xFF9E9E9E),
-                                      min: 15,
-                                      max: 60,
-                                      value: measureHipsValue ??=
-                                          currentUserDocument?.modelMeasureHips,
-                                      label: measureHipsValue.toString(),
-                                      divisions: 45,
-                                      onChanged: (newValue) {
-                                        setState(
-                                            () => measureHipsValue = newValue);
-                                      },
-                                    ),
                                   ),
                                 ],
                               ),
@@ -693,105 +734,20 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                                   style: FlutterFlowTheme.bodyText2,
                                 ),
                               ),
+                              Text(
+                                FFAppState().country,
+                                style: FlutterFlowTheme.bodyText1,
+                              ),
                               Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  FlutterFlowDropDown(
-                                    initialOption: ddCountryValue ??=
-                                        editModelProfileUsersRecord.country,
-                                    options: functions.getCountries().toList(),
-                                    onChanged: (val) =>
-                                        setState(() => ddCountryValue = val),
-                                    width: 180,
-                                    height: 50,
-                                    textStyle:
-                                        FlutterFlowTheme.bodyText1.override(
-                                      fontFamily: 'Lexend Deca',
-                                      color: Colors.black,
+                                  Expanded(
+                                    child: custom_widgets.Cscpicker(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 130,
                                     ),
-                                    fillColor: Colors.white,
-                                    elevation: 2,
-                                    borderColor: Colors.transparent,
-                                    borderWidth: 0,
-                                    borderRadius: 0,
-                                    margin: EdgeInsetsDirectional.fromSTEB(
-                                        12, 4, 12, 4),
-                                    hidesUnderline: true,
-                                  ),
-                                  FlutterFlowDropDown(
-                                    initialOption: ddStateValue ??=
-                                        editModelProfileUsersRecord.state,
-                                    options: functions
-                                        .getStates(ddCountryValue)
-                                        .toList(),
-                                    onChanged: (val) =>
-                                        setState(() => ddStateValue = val),
-                                    width: 180,
-                                    height: 50,
-                                    textStyle:
-                                        FlutterFlowTheme.bodyText1.override(
-                                      fontFamily: 'Lexend Deca',
-                                      color: Colors.black,
-                                    ),
-                                    fillColor: Colors.white,
-                                    elevation: 2,
-                                    borderColor: Colors.transparent,
-                                    borderWidth: 0,
-                                    borderRadius: 0,
-                                    margin: EdgeInsetsDirectional.fromSTEB(
-                                        12, 4, 12, 4),
-                                    hidesUnderline: true,
                                   ),
                                 ],
-                              ),
-                              Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.9,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: FlutterFlowPlacePicker(
-                                        iOSGoogleMapsApiKey:
-                                            'AIzaSyCyA6kZAooomYDgWXoAq28AdFcYBcdhOqs',
-                                        androidGoogleMapsApiKey:
-                                            'AIzaSyCyA6kZAooomYDgWXoAq28AdFcYBcdhOqs',
-                                        webGoogleMapsApiKey:
-                                            'AIzaSyCyA6kZAooomYDgWXoAq28AdFcYBcdhOqs',
-                                        onSelect: (place) => setState(
-                                            () => placePickerValue = place),
-                                        defaultText: 'Select Location',
-                                        icon: Icon(
-                                          Icons.place,
-                                          color: Colors.white,
-                                          size: 16,
-                                        ),
-                                        buttonOptions: FFButtonOptions(
-                                          width: 200,
-                                          height: 40,
-                                          color: FlutterFlowTheme.primaryColor,
-                                          textStyle: FlutterFlowTheme.subtitle2
-                                              .override(
-                                            fontFamily: 'Lexend Deca',
-                                            color: Colors.white,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.transparent,
-                                            width: 1,
-                                          ),
-                                          borderRadius: 12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ),
                             ],
                           ),
@@ -827,14 +783,16 @@ class _EditModelProfileWidgetState extends State<EditModelProfileWidget> {
                               modelHairColor: hairColorDropDownValue,
                               modelEyesColor: eyeColorDropDownValue,
                               modelHeightCm: heightCmValue,
-                              location: placePickerValue.latLng,
-                              city: placePickerValue.city,
-                              state: placePickerValue.state,
-                              country: placePickerValue.country,
                             );
                             await editModelProfileUsersRecord.reference
                                 .update(usersUpdateData);
-                            Navigator.pop(context);
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    NavBarPage(initialPage: 'MERGE_Profile'),
+                              ),
+                            );
                           },
                           text: 'Save Changes',
                           options: FFButtonOptions(
